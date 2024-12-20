@@ -1,19 +1,28 @@
 import { Injectable } from '@nestjs/common';
-   import { JwtService } from '@nestjs/jwt';
-   import * as bcrypt from 'bcryptjs';
+import { JwtService } from '@nestjs/jwt';
+import { UsersService } from '../users/users.service';
+import * as bcrypt from 'bcryptjs';
 
-   @Injectable()
-   export class AuthService {
-     constructor(private jwtService: JwtService) {}
+@Injectable()
+export class AuthService {
+  constructor(
+    private jwtService: JwtService,
+    private usersService: UsersService,
+  ) {}
 
-     async login(user: any) {
-       const payload = { username: user.username, sub: user.userId };
-       return {
-         access_token: this.jwtService.sign(payload),
-       };
-     }
+  async validateUser(email: string, pass: string): Promise<any> {
+    const user = await this.usersService.findByEmail(email);
+    if (user && (await bcrypt.compare(pass, user.password))) {
+      const { password, ...result } = user; // Remove a senha do retorno
+      return result;
+    }
+    return null;
+  }
 
-     async validateUser(username: string, pass: string): Promise<any> {
-       // Lógica de validação do usuário, como verificar senha
-     }
-   }
+  async login(user: any) {
+    const payload = { username: user.name, sub: user.id };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
+  }
+}
