@@ -5,6 +5,9 @@ import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
+  createUser(email: string, password: string, name: string) {
+    throw new Error('Method not implemented.');
+  }
   constructor(private prisma: PrismaService) {}
 
   // Criar um novo usuário

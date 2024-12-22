@@ -5,6 +5,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { PrismaService } from '../../prisma/prisma.service';
 import { JwtStrategy } from './jwt.strategy';
+import { AuthGuard } from './auth.guard'; // Adicionado
 
 @Module({
   imports: [
@@ -15,11 +16,12 @@ import { JwtStrategy } from './jwt.strategy';
     }),
   ],
   providers: [
-    AuthService, 
-    PrismaService, 
-    JwtStrategy, // Estratégia de autenticação
+    AuthService,
+    PrismaService,
+    JwtStrategy,
+    AuthGuard, // Adicionado
   ],
   controllers: [AuthController],
-  exports: [AuthService], // Exporta o serviço de autenticação para outros módulos
+  exports: [AuthService, AuthGuard], // Exporta o AuthGuard para uso em outros módulos
 })
 export class AuthModule {}
